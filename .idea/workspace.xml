@@ -7,14 +7,19 @@
     <cargoProject FILE="$PROJECT_DIR$/src-tauri/Cargo.toml" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="35873069-e864-42af-b12c-c576bb41f315" name="Changes" comment="Finally add src" />
+    <list default="true" id="35873069-e864-42af-b12c-c576bb41f315" name="Changes" comment="Finally add src">
+      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
   <component name="DarkyenusTimeTracker">
-    <option name="totalTimeSeconds" value="28921" />
+    <option name="totalTimeSeconds" value="28947" />
   </component>
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
@@ -52,7 +57,9 @@
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
     "ASKED_ADD_EXTERNAL_FILES": "true",
+    "ASKED_SHARE_PROJECT_CONFIGURATION_FILES": "true",
     "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
     "WebServerToolWindowFactoryState": "true",
     "dart.analysis.tool.window.visible": "false",
     "last_opened_file_path": "C:/Users/NorteX/Desktop/Projects/JS/Websites/nbotmaker/src/components",
@@ -112,7 +119,7 @@
       <workItem from="1675441857528" duration="8371000" />
       <workItem from="1675511827333" duration="278000" />
       <workItem from="1675512157361" duration="363000" />
-      <workItem from="1675512573094" duration="7000" />
+      <workItem from="1675512573094" duration="173000" />
     </task>
     <task id="LOCAL-00001" summary="Add src">
       <created>1675442210746</created>

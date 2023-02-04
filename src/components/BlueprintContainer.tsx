@@ -68,7 +68,6 @@ export default function BlueprintContainer() {
 			onMouseMove={handleMouseMove}
 			style={{ backgroundPosition: `${canvasPosition.x}px ${canvasPosition.y}px` }}
 		>
-			<p style={{ position: "absolute", zIndex: "999" }}>0</p>
 			{blueprint?.nodes.map((node: BpNode, idx: number) => (
 				<Node data={node} key={idx} disablePanning={disablePanning} enablePanning={enablePanning} index={idx} />
 			))}

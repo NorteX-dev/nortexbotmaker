@@ -1,6 +1,7 @@
 import classes from "../styles/Blueprint.module.scss";
 import { Blueprint, BpNode, useBlueprint } from "@/providers/BlueprintProvider";
 import React, { useEffect, useRef, useState } from "react";
+import Line from "@/components/Line";
 
 export default function Node({
 	data,
@@ -20,7 +21,7 @@ export default function Node({
 	const ref1 = useRef<HTMLDivElement>(null);
 	const ref2 = useRef<HTMLDivElement>(null);
 	const [coords, setCoords] = useState({ x1: 0, y1: 0, x2: 0, y2: 0 });
-	const [showLine, setShowLine] = useState(true);
+	const [showLine, setShowLine] = useState(false);
 
 	const handleMouseDown = (event: any) => {
 		if (event.button !== 0) return;
@@ -35,7 +36,6 @@ export default function Node({
 		setPressing(false);
 		enablePanning();
 	};
-
 	const handleMouseMove = (event: any) => {
 		if (pressing) {
 			const deltaX = event.clientX - mousePosition.x;
@@ -104,35 +104,7 @@ export default function Node({
 					<p>{data.name}</p>
 					<div className={classes.handle} onMouseDown={(e) => e.stopPropagation()} ref={ref2}></div>
 					{showLine && (
-						<>
-							<svg
-								style={{
-									position: "absolute",
-									left: coords.x1 + 22 /*handle width*/ / 2,
-									top: coords.y1 + 15 /*handle height*/ / 2,
-									width: "100px",
-									height: "100px",
-									overflow: "visible",
-								}}
-							>
-								<path
-									d={`M 0 0 L ${coords.x2 - 22 /*handle width*/ / 2} ${50}`}
-									fill="none"
-									stroke="white"
-									strokeWidth={2}
-								/>
-							</svg>
-							{/*<div*/}
-							{/*	style={{*/}
-							{/*		position: "absolute",*/}
-							{/*		top: coords.y1,*/}
-							{/*		left: coords.x1,*/}
-							{/*		width: "50px",*/}
-							{/*		height: "50px",*/}
-							{/*		backgroundColor: "red",*/}
-							{/*	}}*/}
-							{/*></div>*/}
-						</>
+						<Line from={{ x: coords.x1, y: coords.y1 }} to={{ x: coords.x2, y: coords.y2 }}></Line>
 					)}
 				</div>
 			</div>

@@ -46,10 +46,9 @@ impl Blueprint {
 
 /* PROJECT */
 
-#[derive(Debug)]
+#[derive(Serialize, Deserialize, Debug)]
 pub struct Project {
 	file_path: String,
-	saved: bool,
 	blueprint: Blueprint,
 }
 
@@ -57,7 +56,6 @@ impl Project {
 	pub fn new() -> Self {
 		Self {
 			file_path: String::new(),
-			saved: false,
 			blueprint: Blueprint::new(),
 		}
 	}
@@ -73,7 +71,6 @@ impl Project {
 
 	pub fn save_as(&mut self, file_path: String) -> Result<(), Error> {
 		self.file_path = file_path;
-		self.saved = true;
 		self.save()
 	}
 }

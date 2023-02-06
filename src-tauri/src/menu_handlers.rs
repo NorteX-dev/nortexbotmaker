@@ -1,4 +1,6 @@
-use tauri::{AppHandle, CustomMenuItem, Manager, Menu, MenuItem, Submenu, WindowBuilder, WindowMenuEvent, WindowUrl, Wry};
+use tauri::{AppHandle, CustomMenuItem, Manager, Menu, MenuItem, State, Submenu, WindowBuilder, WindowMenuEvent, WindowUrl, Wry};
+use tauri::api::dialog;
+use crate::structures::ProjectState;
 
 fn new_project(app_handle: AppHandle<Wry>) {
 	println!("New Project")
@@ -17,8 +19,15 @@ fn save(app_handle: AppHandle<Wry>) {
 }
 
 fn save_as(app_handle: AppHandle<Wry>) {
-	println!("invoking");
-	app_handle.emit_all("save_project_menu", ()).unwrap();
+	// let mut file_path = None;
+	// let file_path_clone = file_path.clone();
+	// dialog::FileDialogBuilder::default()
+	// 	.add_filter("NDBC Project", &["ndbc"])
+	// 	.save_file(move |path| if let Some(p) = path { file_path = Some(p) });
+	// let mut proj = project.0.lock().unwrap();
+	// let path_buf = file_path_clone.unwrap();
+	// let path_string = path_buf.to_str().unwrap().to_string();
+	// proj.save_as(path_string);
 }
 
 fn quit(app_handle: AppHandle<Wry>) -> ! {
@@ -119,7 +128,7 @@ pub fn get_menu_handler() -> fn(WindowMenuEvent<Wry>) {
 			"open" => open_project(event.window().app_handle()),
 			"recent" => open_recent(event.window().app_handle()),
 			"save" => save(event.window().app_handle()),
-			"save_as" => save_as(event.window().app_handle()),
+			"save_as" => save_as(event.window().app_handle())
 			"quit" => quit(event.window().app_handle()),
 
 			"command" => create_command(event.window().app_handle()),

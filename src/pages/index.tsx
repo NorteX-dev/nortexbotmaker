@@ -8,16 +8,12 @@ export default function Home() {
 	const blueprint = useBlueprint();
 
 	async function saveProject() {
-		const filePath = await save({
-			filters: [{ name: "NDBC Project", extensions: ["ndbc"] }],
-			title: "Save Project",
-		});
-		await invoke("save_project_as", { filePath }).then((res) => console.log("response", res));
+		// const filePath = await save({
+		// 	filters: [{ name: "NDBC Project", extensions: ["ndbc"] }],
+		// 	title: "Save Project",
+		// });
+		// await invoke("save_project_as", { filePath }).then((res) => console.log("response", res));
 	}
-
-	useEffect(() => {
-		saveProject();
-	}, []);
 
 	return (
 		<>

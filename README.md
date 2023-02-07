@@ -8,7 +8,7 @@ In some ways, this system could be considered programming, just simplified.
 The app is built with [Tauri](https://tauri.app/) which means it's ran by Rust & TypeScript (Next.JS -> React).
 
 ### Running
-To run this software, install it via an installer for your operating system. Releases are available in [releases](https://github.com/NorteX-dev/nortexbotmaker/releases).
+To run this software, install it via an installer for your operating system. They are available in [releases](https://github.com/NorteX-dev/nortexbotmaker/releases).
 
 ### Building
 You can use `yarn run build` to build a fresh version of the app.

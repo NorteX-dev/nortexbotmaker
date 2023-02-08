@@ -1,20 +1,23 @@
 import { useEffect } from "react";
 
 interface IOptions {
-	ctrl: boolean;
-	alt: boolean;
-	shift: boolean;
+	ctrl?: boolean;
+	alt?: boolean;
+	shift?: boolean;
 }
 
 export function useKeybind(
 	key: string,
 	cb: () => void,
-	{ ctrl, alt, shift }: IOptions = { ctrl: false, alt: false, shift: false }
+	{ ctrl, alt, shift }: IOptions = { ctrl: undefined, alt: undefined, shift: undefined }
 ) {
 	useEffect(() => {
 		const listener = (event: KeyboardEvent) => {
-			if (event.key === key && event.ctrlKey === ctrl && event.altKey === alt && event.shiftKey === shift) {
-				cb();
+			console.log(event, event.key);
+			if (event.key === key) {
+				if (ctrl && event.ctrlKey) cb();
+				if (alt && event.altKey) cb();
+				if (shift && event.shiftKey) cb();
 			}
 		};
 

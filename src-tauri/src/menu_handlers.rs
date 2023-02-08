@@ -1,84 +1,85 @@
-use tauri::{AppHandle, CustomMenuItem, Manager, Menu, MenuItem, State, Submenu, WindowBuilder, WindowMenuEvent, WindowUrl, Wry};
+use tauri::{CustomMenuItem, Manager, Menu, MenuItem, Submenu, WindowBuilder, WindowMenuEvent, WindowUrl, Wry};
 use tauri::api::dialog;
-use crate::structures::ProjectState;
+use crate::structures::{ProjectState};
 
-fn new_project(app_handle: AppHandle<Wry>) {
+fn new_project(event: WindowMenuEvent<Wry>) {
 	println!("New Project")
 }
 
-fn open_project(app_handle: AppHandle<Wry>) {
+fn open_project(event: WindowMenuEvent<Wry>) {
 	println!("Open")
 }
 
-fn open_recent(app_handle: AppHandle<Wry>) {
+fn open_recent(event: WindowMenuEvent<Wry>) {
 	println!("Open Recent")
 }
 
-fn save(app_handle: AppHandle<Wry>) {
+fn save(event: WindowMenuEvent<Wry>) {
 	println!("Save")
 }
 
-fn save_as(app_handle: AppHandle<Wry>) {
-	// let mut file_path = None;
-	// let file_path_clone = file_path.clone();
-	// dialog::FileDialogBuilder::default()
-	// 	.add_filter("NDBC Project", &["ndbc"])
-	// 	.save_file(move |path| if let Some(p) = path { file_path = Some(p) });
-	// let mut proj = project.0.lock().unwrap();
-	// let path_buf = file_path_clone.unwrap();
-	// let path_string = path_buf.to_str().unwrap().to_string();
-	// proj.save_as(path_string);
+fn save_as(event: WindowMenuEvent<Wry>) {
+	dialog::FileDialogBuilder::default()
+		.add_filter("NDBC Project", &["ndbc"])
+		.save_file(move |path| if let Some(p) = path {
+			let project = event.window().state::<ProjectState>();
+			let mut project = project.0.lock().unwrap();
+			let path_buf = Some(p).unwrap();
+			let path_string = path_buf.to_str().unwrap().to_string();
+			println!("{}", path_string);
+			project.save_as(path_string).expect("Failed to save project as.");
+		});
 }
 
-fn quit(app_handle: AppHandle<Wry>) -> ! {
+fn quit(event: WindowMenuEvent<Wry>) -> ! {
 	std::process::exit(0)
 }
 
-fn create_command(app_handle: AppHandle<Wry>) {
+fn create_command(event: WindowMenuEvent<Wry>) {
 	println!("Create Command")
 }
 
-fn create_event(app_handle: AppHandle<Wry>) {
+fn create_event(event: WindowMenuEvent<Wry>) {
 	println!("Create Event")
 }
 
-fn create_config_param(app_handle: AppHandle<Wry>) {
+fn create_config_param(event: WindowMenuEvent<Wry>) {
 	println!("Create Config Parameter")
 }
 
-fn build(app_handle: AppHandle<Wry>) {
+fn build(event: WindowMenuEvent<Wry>) {
 	println!("Build")
 }
 
-fn build_run(app_handle: AppHandle<Wry>) {
+fn build_run(event: WindowMenuEvent<Wry>) {
 	println!("Build and Run")
 }
 
-fn run(app_handle: AppHandle<Wry>) {
+fn run(event: WindowMenuEvent<Wry>) {
 	println!("Run without Building")
 }
 
-fn view_files(app_handle: AppHandle<Wry>) {
+fn view_files(event: WindowMenuEvent<Wry>) {
 	println!("View built files")
 }
 
-fn create_exe(app_handle: AppHandle<Wry>) {
+fn create_exe(event: WindowMenuEvent<Wry>) {
 	println!("Generate executable")
 }
 
-fn check_updates(app_handle: AppHandle<Wry>) {
+fn check_updates(event: WindowMenuEvent<Wry>) {
 	println!("Check for Updates")
 }
 
-fn about(app_handle: AppHandle<Wry>) {
-	match WindowBuilder::new(&app_handle, "external", WindowUrl::External("https://youtube.com/".parse().unwrap())).build() {
+fn about(event: WindowMenuEvent<Wry>) {
+	match WindowBuilder::new(&event.window().app_handle(), "external", WindowUrl::External("https://youtube.com/".parse().unwrap())).build() {
 		Ok(_) => (),
 		Err(e) => {}
 	}
 }
 
-fn unknown(app_handle: AppHandle<Wry>, id: &str) {
-	println!("Unknown menu item: {}", id);
+fn unknown(event: WindowMenuEvent<Wry>) {
+	println!("Unknown menu item: {}", event.menu_item_id());
 }
 
 pub fn get_menu() -> Menu {
@@ -111,40 +112,38 @@ pub fn get_menu() -> Menu {
 		.add_item(CustomMenuItem::new("about".to_string(), "About"));
 
 
-	let final_menu = Menu::new()
+	Menu::new()
 		.add_submenu(Submenu::new("File", file_menu))
 		.add_submenu(Submenu::new("Project", project_menu))
 		.add_submenu(Submenu::new("Build", build_menu))
-		.add_submenu(Submenu::new("Help", help_menu));
-
-	final_menu
+		.add_submenu(Submenu::new("Help", help_menu))
 }
 
 
 pub fn get_menu_handler() -> fn(WindowMenuEvent<Wry>) {
 	|event: WindowMenuEvent<Wry>| {
 		match event.menu_item_id() {
-			"new" => new_project(event.window().app_handle()),
-			"open" => open_project(event.window().app_handle()),
-			"recent" => open_recent(event.window().app_handle()),
-			"save" => save(event.window().app_handle()),
-			"save_as" => save_as(event.window().app_handle())
-			"quit" => quit(event.window().app_handle()),
+			"new" => new_project(event),
+			"open" => open_project(event),
+			"recent" => open_recent(event),
+			"save" => save(event),
+			"save_as" => save_as(event),
+			"quit" => quit(event),
 
-			"command" => create_command(event.window().app_handle()),
-			"event" => create_event(event.window().app_handle()),
-			"parameter" => create_config_param(event.window().app_handle()),
+			"command" => create_command(event),
+			"event" => create_event(event),
+			"parameter" => create_config_param(event),
 
-			"build" => build(event.window().app_handle()),
-			"build_run" => build_run(event.window().app_handle()),
-			"run" => run(event.window().app_handle()),
-			"view_files" => view_files(event.window().app_handle()),
-			"create_exe" => create_exe(event.window().app_handle()),
+			"build" => build(event),
+			"build_run" => build_run(event),
+			"run" => run(event),
+			"view_files" => view_files(event),
+			"create_exe" => create_exe(event),
 
-			"check_updates" => check_updates(event.window().app_handle()),
-			"about" => about(event.window().app_handle()),
+			"check_updates" => check_updates(event),
+			"about" => about(event),
 
-			_ => unknown(event.window().app_handle(), event.menu_item_id()),
+			_ => unknown(event),
 		}
 	}
 }

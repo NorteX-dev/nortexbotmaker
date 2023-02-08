@@ -1,5 +1,5 @@
 import classes from "../styles/Blueprint.module.scss";
-import { Blueprint, BpNode, useBlueprint } from "@/providers/BlueprintProvider";
+import { BpNode, Project, useProject } from "@/providers/ProjectProvider";
 import React, { useEffect, useRef, useState } from "react";
 import Line from "@/components/Line";
 
@@ -14,7 +14,7 @@ export default function Node({
 	enablePanning: () => void;
 	index: number;
 }) {
-	const { setBlueprint, saveBlueprint } = useBlueprint();
+	const { setProject } = useProject();
 	const [pressing, setPressing] = useState<boolean>(false);
 	const [mousePosition, setMousePosition] = useState<{ x: number; y: number }>({ x: 0, y: 0 });
 
@@ -41,15 +41,17 @@ export default function Node({
 			const deltaX = event.clientX - mousePosition.x;
 			const deltaY = event.clientY - mousePosition.y;
 			setMousePosition({ x: event.clientX, y: event.clientY });
-			setBlueprint((blueprint: Blueprint) => ({
-				...blueprint,
-				nodes: blueprint.nodes.map((node, idx) => {
-					if (idx !== index) return node;
-					return {
-						...node,
-						position: [node.position[0] + deltaX, node.position[1] + deltaY],
-					};
-				}),
+			setProject((project: Project) => ({
+				blueprint: {
+					...project.blueprint,
+					nodes: project.blueprint.nodes.map((node, idx) => {
+						if (idx !== index) return node;
+						return {
+							...node,
+							position: [node.position[0] + deltaX, node.position[1] + deltaY],
+						};
+					}),
+				},
 			}));
 		}
 	};
@@ -89,7 +91,6 @@ export default function Node({
 				<div
 					className={classes.nodeTitle}
 					onMouseDown={handleMouseDown}
-					onMouseUp={saveBlueprint}
 					style={{
 						background: `linear-gradient(to right, ${data.color}, #5f5f5f)`,
 					}}

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import Node from "@/components/Node";
 import classes from "../styles/Blueprint.module.scss";
-import { Blueprint, BpNode, useBlueprint } from "@/providers/BlueprintProvider";
+import { BpNode, Project, useProject } from "@/providers/ProjectProvider";
 
 export default function BlueprintContainer() {
 	const [pressing, setPressing] = useState<boolean>(false);
@@ -9,7 +9,7 @@ export default function BlueprintContainer() {
 	const [canvasPosition, setCanvasPosition] = useState<{ x: number; y: number }>({ x: 0, y: 0 });
 	const [mousePosition, setMousePosition] = useState<{ x: number; y: number }>({ x: 0, y: 0 });
 
-	const { blueprint, setBlueprint } = useBlueprint();
+	const { project, setProject } = useProject();
 
 	const handleMouseDown = (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
 		if (event.button !== 0) return;
@@ -29,12 +29,15 @@ export default function BlueprintContainer() {
 			const deltaY = event.clientY - mousePosition.y;
 			setCanvasPosition({ x: canvasPosition.x + deltaX, y: canvasPosition.y + deltaY });
 			setMousePosition({ x: event.clientX, y: event.clientY });
-			setBlueprint((blueprint: Blueprint) => ({
-				...blueprint,
-				nodes: blueprint.nodes.map((node) => ({
-					...node,
-					position: [node.position[0] + deltaX, node.position[1] + deltaY],
-				})),
+			setProject((project: Project) => ({
+				...project,
+				blueprint: {
+					...project.blueprint,
+					nodes: project.blueprint.nodes.map((node: BpNode) => ({
+						...node,
+						position: [node.position[0] + deltaX, node.position[1] + deltaY],
+					})),
+				},
 			}));
 		}
 	};
@@ -59,7 +62,7 @@ export default function BlueprintContainer() {
 		};
 	}, []);
 
-	if (!blueprint) return null;
+	if (!project) return null;
 	return (
 		<div
 			className={classes.container}
@@ -68,7 +71,7 @@ export default function BlueprintContainer() {
 			onMouseMove={handleMouseMove}
 			style={{ backgroundPosition: `${canvasPosition.x}px ${canvasPosition.y}px` }}
 		>
-			{blueprint?.nodes.map((node: BpNode, idx: number) => (
+			{project?.blueprint.nodes.map((node: BpNode, idx: number) => (
 				<Node data={node} key={idx} disablePanning={disablePanning} enablePanning={enablePanning} index={idx} />
 			))}
 		</div>

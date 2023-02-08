@@ -8,19 +8,19 @@ mod errors;
 
 use menu_handlers::{get_menu, get_menu_handler};
 use std::sync::Mutex;
-use tauri::{State, AppHandle, Manager};
-use tauri::api::dialog;
+use tauri::{Manager, State};
 use structures::{Project, ProjectState};
 
 #[tauri::command]
-fn save_project(mut project: Project) {
-	project.save().unwrap();
+fn get_project(project: State<ProjectState>) -> Project {
+	(*project.0.lock().unwrap()).clone()
 }
+
 
 fn main() {
 	tauri::Builder::default()
 		.manage(ProjectState(Mutex::from(Project::new())))
-		.invoke_handler(tauri::generate_handler![save_project])
+		.invoke_handler(tauri::generate_handler![get_project])
 		.setup(|app| {
 			#[cfg(debug_assertions)]
 			{

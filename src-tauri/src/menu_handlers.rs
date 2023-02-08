@@ -15,7 +15,16 @@ fn open_recent(event: WindowMenuEvent<Wry>) {
 }
 
 fn save(event: WindowMenuEvent<Wry>) {
-	println!("Save")
+	let project = event.window().state::<ProjectState>();
+	let mut project = project.0.lock().unwrap();
+
+	match project.save() {
+		Err(_) => {
+			drop(project);
+			save_as(event);
+		},
+		Ok(_) => {},
+	}
 }
 
 fn save_as(event: WindowMenuEvent<Wry>) {

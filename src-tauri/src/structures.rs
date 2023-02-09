@@ -44,6 +44,10 @@ impl Blueprint {
 	pub fn set_next(&mut self, target_node: usize, next_id: usize) {
 		self.nodes[target_node].set_next(next_id);
 	}
+
+	pub fn set_node_position(&mut self, node_id: usize, position: (f32, f32)) {
+		self.nodes[node_id].position = position;
+	}
 }
 
 /* PROJECT */

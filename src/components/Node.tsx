@@ -2,6 +2,10 @@ import classes from "../styles/Blueprint.module.scss";
 import { BpNode, Project, useProject } from "@/providers/ProjectProvider";
 import React, { useEffect, useRef, useState } from "react";
 import Line from "@/components/Line";
+import { invoke } from "@tauri-apps/api/tauri";
+import ContextMenu, { MenuElement } from "@/components/ContextMenu";
+import { createNode } from "@/handlers/createNode";
+import { DeviceFloppy, Plus, Trash } from "tabler-icons-react";
 
 export default function Node({
 	data,
@@ -15,6 +19,7 @@ export default function Node({
 	index: number;
 }) {
 	const { setProject } = useProject();
+
 	const [pressing, setPressing] = useState<boolean>(false);
 	const [mousePosition, setMousePosition] = useState<{ x: number; y: number }>({ x: 0, y: 0 });
 
@@ -22,6 +27,9 @@ export default function Node({
 	const ref2 = useRef<HTMLDivElement>(null);
 	const [coords, setCoords] = useState({ x1: 0, y1: 0, x2: 0, y2: 0 });
 	const [showLine, setShowLine] = useState(false);
+
+	const [contextMenuShown, setContextMenuShown] = useState(false);
+	const [contextMenuPos, setContextMenuPos] = useState({ x: 0, y: 0 });
 
 	const handleMouseDown = (event: any) => {
 		if (event.button !== 0) return;
@@ -31,12 +39,16 @@ export default function Node({
 		disablePanning();
 	};
 
-	const handleMouseUp = (event: any) => {
+	const handleMouseUp = async (event: any) => {
 		if (event.button !== 0) return;
 		setPressing(false);
 		enablePanning();
+		await invoke("set_node_position", {
+			id: data.id,
+			position: [data.position[0], data.position[1]],
+		});
 	};
-	const handleMouseMove = (event: any) => {
+	const handleMouseMove = async (event: any) => {
 		if (pressing) {
 			const deltaX = event.clientX - mousePosition.x;
 			const deltaY = event.clientY - mousePosition.y;
@@ -54,6 +66,13 @@ export default function Node({
 				},
 			}));
 		}
+	};
+	let handleNodeMenu = (event: any) => {
+		event.stopPropagation();
+		event.preventDefault();
+		setContextMenuShown(true);
+		if (window.innerWidth - event.clientX < 200) setContextMenuPos({ x: event.clientX - 200, y: event.clientY });
+		else setContextMenuPos({ x: event.clientX, y: event.clientY });
 	};
 
 	useEffect(() => {
@@ -77,38 +96,59 @@ export default function Node({
 		}
 	}, [ref1, ref2]);
 
+	const NODE_CONTEXT_MENU: MenuElement[] = [
+		{
+			name: "Delete",
+			action: () => {
+				console.log("delete");
+			},
+			icon: Trash,
+			danger: true,
+		},
+	];
+
 	return (
-		<div
-			className={classes.node}
-			style={{
-				left: `${data.position[0]}px`,
-				top: `${data.position[1]}px`,
-				zIndex: index,
-				opacity: pressing ? 0.75 : 1,
-			}}
-		>
-			<div className={classes.nodeContent}>
-				<div
-					className={classes.nodeTitle}
-					onMouseDown={handleMouseDown}
-					style={{
-						background: `linear-gradient(to right, ${data.color}, #5f5f5f)`,
-					}}
-				>
+		<>
+			<div
+				className={classes.node}
+				style={{
+					left: `${data.position[0]}px`,
+					top: `${data.position[1]}px`,
+					zIndex: index,
+					opacity: pressing ? 0.75 : 1,
+				}}
+			>
+				<div className={classes.nodeContent}>
 					<div
-						className={classes.handle}
-						onMouseDown={(e) => e.stopPropagation()}
-						onMouseEnter={() => setShowLine(true)}
-						onMouseLeave={() => setShowLine(false)}
-						ref={ref1}
-					></div>
-					<p>{data.name}</p>
-					<div className={classes.handle} onMouseDown={(e) => e.stopPropagation()} ref={ref2}></div>
-					{showLine && (
-						<Line from={{ x: coords.x1, y: coords.y1 }} to={{ x: coords.x2, y: coords.y2 }}></Line>
-					)}
+						className={classes.nodeTitle}
+						onMouseDown={handleMouseDown}
+						style={{
+							background: `linear-gradient(to right, ${data.color}, #5f5f5f)`,
+						}}
+						onContextMenu={handleNodeMenu}
+					>
+						<div
+							className={classes.handle}
+							onMouseDown={(e) => e.stopPropagation()}
+							onMouseEnter={() => setShowLine(true)}
+							onMouseLeave={() => setShowLine(false)}
+							ref={ref1}
+						></div>
+						<p>{data.name}</p>
+						<div className={classes.handle} onMouseDown={(e) => e.stopPropagation()} ref={ref2}></div>
+						{showLine && (
+							<Line from={{ x: coords.x1, y: coords.y1 }} to={{ x: coords.x2, y: coords.y2 }}></Line>
+						)}
+					</div>
 				</div>
 			</div>
-		</div>
+			{contextMenuShown && (
+				<ContextMenu
+					elements={NODE_CONTEXT_MENU}
+					position={contextMenuPos}
+					onClose={() => setContextMenuShown(false)}
+				/>
+			)}
+		</>
 	);
 }

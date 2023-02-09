@@ -8,6 +8,7 @@ export interface MenuElement {
 	action: () => void;
 	keybind?: string;
 	icon?: any;
+	danger?: boolean;
 }
 
 export default function ContextMenu({
@@ -39,7 +40,7 @@ export default function ContextMenu({
 			<ul className={classes.list}>
 				{elements.map((element: MenuElement, idx: number) => (
 					<li className={classes.element} onClick={() => handleClick(element.action)} key={idx}>
-						<div className={classes.name}>
+						<div className={classes.name} style={element.danger ? { color: "#da3232" } : {}}>
 							{element.icon && <element.icon size={18} strokeWidth={2} />}
 							{element.name}
 						</div>

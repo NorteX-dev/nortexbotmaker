@@ -1,12 +1,15 @@
 import React, { useEffect, useState } from "react";
 import ContextMenu from "./ContextMenu";
-import { DeviceFloppy, Plus } from "tabler-icons-react";
+import { DeviceFloppy, Plus, Refresh } from "tabler-icons-react";
 import { MenuElement } from "@/components/ContextMenu";
 import { createNode } from "@/handlers/createNode";
+import { useProject } from "@/providers/ProjectProvider";
 
 export default function RightClickContextMenuHandler() {
 	const [shown, setShown] = useState(false);
 	const [menuPos, setMenuPos] = useState({ x: 0, y: 0 });
+
+	const { updateProject } = useProject();
 
 	const RC_CONTEXT_MENU: MenuElement[] = [
 		{
@@ -16,6 +19,13 @@ export default function RightClickContextMenuHandler() {
 			keybind: "Ctrl + A",
 		},
 		{ name: "Save Project", action: () => {}, icon: DeviceFloppy, keybind: "Ctrl + S" },
+		{
+			name: "Refresh",
+			action: () => {
+				updateProject();
+			},
+			icon: Refresh,
+		},
 	];
 
 	const onRightClick = (event: MouseEvent) => {

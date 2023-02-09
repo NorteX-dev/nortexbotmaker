@@ -1276,6 +1276,11 @@
   dependencies:
     tslib "^2.4.0"
 
+"@tabler/icons@^2.2.0":
+  version "2.2.0"
+  resolved "https://registry.yarnpkg.com/@tabler/icons/-/icons-2.2.0.tgz#b3d0682d83d7d341a5dcf517f9247dccf30d7ab1"
+  integrity sha512-s2mm+7JqmLObKdU89Dtiy+USmUpOlACsoXZZPykjAJZC4pK3wMYxLsclJxViWLeLTb6Bc0oga92V7R+9nrj1ZQ==
+
 "@tauri-apps/api@^1.2.0":
   version "1.2.0"
   resolved "https://registry.npmjs.org/@tauri-apps/api/-/api-1.2.0.tgz"
@@ -3414,6 +3419,11 @@ synckit@^0.8.4:
   dependencies:
     "@pkgr/utils" "^2.3.1"
     tslib "^2.5.0"
+
+tabler-icons-react@^1.56.0:
+  version "1.56.0"
+  resolved "https://registry.yarnpkg.com/tabler-icons-react/-/tabler-icons-react-1.56.0.tgz#d2a6cf9160f25b370c38c356fa6284c254e5113e"
+  integrity sha512-FOme3w6PJIWDpeXqQ4xjArQqdxzrr9xNy7PSSgWpRzOUQ71RyZ7jt6WThsfyLBz5os78TPJRA8f/0NLjnKcx9A==
 
 tapable@^2.2.0:
   version "2.2.1"

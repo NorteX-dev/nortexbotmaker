@@ -7,7 +7,15 @@ fn new_project(event: WindowMenuEvent<Wry>) {
 }
 
 fn open_project(event: WindowMenuEvent<Wry>) {
-	println!("Open")
+	dialog::FileDialogBuilder::default()
+		.add_filter("NDBC Project", &["ndbc"])
+		.pick_file(move |path| if let Some(p) = path {
+			let project = event.window().state::<ProjectState>();
+			let project = project.0.lock().unwrap();
+			let path_buf = Some(p).unwrap();
+			let path_string = path_buf.to_str().unwrap().to_string();
+			println!("{}", path_string);
+		});
 }
 
 fn open_recent(event: WindowMenuEvent<Wry>) {
@@ -18,12 +26,11 @@ fn save(event: WindowMenuEvent<Wry>) {
 	let project = event.window().state::<ProjectState>();
 	let mut project = project.0.lock().unwrap();
 
-	match project.save() {
-		Err(_) => {
-			drop(project);
-			save_as(event);
-		},
-		Ok(_) => {},
+	event.window().set_title(&format!("Project {}", project.file_path)).expect("TODO: panic message");
+
+	if project.save().is_err() {
+		drop(project);
+		save_as(event);
 	}
 }
 
@@ -35,7 +42,6 @@ fn save_as(event: WindowMenuEvent<Wry>) {
 			let mut project = project.0.lock().unwrap();
 			let path_buf = Some(p).unwrap();
 			let path_string = path_buf.to_str().unwrap().to_string();
-			println!("{}", path_string);
 			project.save_as(path_string).expect("Failed to save project as.");
 		});
 }

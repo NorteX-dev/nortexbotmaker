@@ -44,16 +44,12 @@ impl Blueprint {
 	pub fn set_next(&mut self, target_node: usize, next_id: usize) {
 		self.nodes[target_node].set_next(next_id);
 	}
-
-	fn serialise_json(&mut self) -> String {
-		to_string(&self).unwrap()
-	}
 }
 
 /* PROJECT */
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct Project {
-	file_path: String,
+	pub file_path: String,
 	blueprint: Blueprint,
 }
 
@@ -65,12 +61,28 @@ impl Project {
 		}
 	}
 
+	fn open(file_path: &String) -> Result<(), Error> {
+		let exists = Path::new(file_path).exists();
+		if !exists {
+
+		}
+		let data = fs::read(file_path);
+
+		Ok(())
+	}
+
+
+	fn serialize_json(&mut self) -> String {
+		to_string(&self).unwrap()
+	}
+
 	pub fn save(&mut self) -> Result<(), Error> {
 		let exists = Path::new(&self.file_path).exists();
 		// if !exists {
 		// 	fs::create_dir_all(&self.file_path).unwrap();
 		// }
-		fs::write(&self.file_path, self.blueprint.serialise_json())?;
+		fs::write(&self.file_path, &self.serialize_json())?;
+		// fs::write(&self.file_path, &self.serialize_json())?;
 		Ok(())
 	}
 

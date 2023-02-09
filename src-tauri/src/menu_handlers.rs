@@ -26,7 +26,7 @@ fn save(event: WindowMenuEvent<Wry>) {
 	let project = event.window().state::<ProjectState>();
 	let mut project = project.0.lock().unwrap();
 
-	event.window().set_title(&format!("Project {}", project.file_path)).expect("TODO: panic message");
+	event.window().set_title(&format!("Project {}", project.file_path)).expect("Failed to set window title.");
 
 	if project.save().is_err() {
 		drop(project);

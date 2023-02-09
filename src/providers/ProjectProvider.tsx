@@ -1,5 +1,6 @@
 import { createContext, ReactNode, useContext, useEffect, useState } from "react";
 import { invoke } from "@tauri-apps/api/tauri";
+import { setIn } from "immutable";
 
 export interface BpNode {
 	id: number;
@@ -29,15 +30,13 @@ export default function ProjectProvider({ children }: { children: ReactNode }) {
 	}
 
 	useEffect(() => {
-		getProject();
-		// Context menu remover:
-		// const handleContextMenu = (e: MouseEvent) => {
-		// 	e.preventDefault();
-		// };
-		// document.addEventListener("contextmenu", handleContextMenu);
-		// return () => {
-		// 	document.removeEventListener("contextmenu", handleContextMenu);
-		// };
+		const i = setInterval(() => {
+			console.log("Updating project");
+			getProject();
+		}, 3000);
+		return () => {
+			clearInterval(i);
+		};
 	}, []);
 
 	return <ProjectContext.Provider value={{ project, setProject }}>{children}</ProjectContext.Provider>;

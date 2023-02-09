@@ -16,11 +16,17 @@ fn get_project(project: State<ProjectState>) -> Project {
 	(*project.0.lock().unwrap()).clone()
 }
 
+#[tauri::command]
+fn add_node(project: State<ProjectState>, name: String, position: (f32, f32)) {
+	let mut project = project.0.lock().unwrap();
+	project.blueprint.add_node(name, position, Some("#fff".to_string()));
+}
+
 
 fn main() {
 	tauri::Builder::default()
 		.manage(ProjectState(Mutex::from(Project::new())))
-		.invoke_handler(tauri::generate_handler![get_project])
+		.invoke_handler(tauri::generate_handler![get_project, add_node])
 		.setup(|app| {
 			#[cfg(debug_assertions)]
 			{

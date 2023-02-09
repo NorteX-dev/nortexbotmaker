@@ -36,8 +36,8 @@ impl Blueprint {
 		Blueprint { nodes: vec![] }
 	}
 
-	pub fn add_node(&mut self, name: String, color: Option<String>) {
-		let node = Node::new(self.nodes.len(), name, (0.0, 0.0), color.unwrap_or("#ddd".to_string()));
+	pub fn add_node(&mut self, name: String, position: (f32, f32), color: Option<String>) {
+		let node = Node::new(self.nodes.len(), name, position, color.unwrap_or("#ddd".to_string()));
 		self.nodes.push(node);
 	}
 
@@ -50,7 +50,7 @@ impl Blueprint {
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct Project {
 	pub file_path: String,
-	blueprint: Blueprint,
+	pub blueprint: Blueprint,
 }
 
 impl Project {
@@ -64,7 +64,7 @@ impl Project {
 	fn open(file_path: &String) -> Result<(), Error> {
 		let exists = Path::new(file_path).exists();
 		if !exists {
-
+			return Err(std::io::Error::new(std::io::ErrorKind::NotFound, "File not found.").into());
 		}
 		let data = fs::read(file_path);
 
@@ -72,7 +72,7 @@ impl Project {
 	}
 
 
-	fn serialize_json(&mut self) -> String {
+	fn serialize_json(&self) -> String {
 		to_string(&self).unwrap()
 	}
 
@@ -81,8 +81,7 @@ impl Project {
 		// if !exists {
 		// 	fs::create_dir_all(&self.file_path).unwrap();
 		// }
-		fs::write(&self.file_path, &self.serialize_json())?;
-		// fs::write(&self.file_path, &self.serialize_json())?;
+		fs::write(&self.file_path, self.serialize_json())?;
 		Ok(())
 	}
 

@@ -38,15 +38,13 @@ export default function ContextMenu({
 		<div className={classes.wrapper} ref={ref} style={{ top: position.y + "px", left: position.x + "px" }}>
 			<ul className={classes.list}>
 				{elements.map((element: MenuElement, idx: number) => (
-					<>
-						<li className={classes.element} onClick={() => handleClick(element.action)} key={idx}>
-							<div className={classes.name}>
-								{element.icon && <element.icon size={18} strokeWidth={2} />}
-								{element.name}
-							</div>
-							{element.keybind && <div className={classes.keybind}>{element.keybind}</div>}
-						</li>
-					</>
+					<li className={classes.element} onClick={() => handleClick(element.action)} key={idx}>
+						<div className={classes.name}>
+							{element.icon && <element.icon size={18} strokeWidth={2} />}
+							{element.name}
+						</div>
+						{element.keybind && <div className={classes.keybind}>{element.keybind}</div>}
+					</li>
 				))}
 			</ul>
 		</div>

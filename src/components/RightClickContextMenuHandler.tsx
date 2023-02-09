@@ -1,10 +1,22 @@
 import React, { useEffect, useState } from "react";
 import ContextMenu from "./ContextMenu";
-import { RC_CONTEXT_MENU } from "@/const/contextMenu";
+import { DeviceFloppy, Plus } from "tabler-icons-react";
+import { MenuElement } from "@/components/ContextMenu";
+import { createNode } from "@/handlers/createNode";
 
 export default function RightClickContextMenuHandler() {
 	const [shown, setShown] = useState(false);
 	const [menuPos, setMenuPos] = useState({ x: 0, y: 0 });
+
+	const RC_CONTEXT_MENU: MenuElement[] = [
+		{
+			name: "Create Node",
+			action: () => createNode({ x: menuPos.x, y: menuPos.y }),
+			icon: Plus,
+			keybind: "Ctrl + A",
+		},
+		{ name: "Save Project", action: () => {}, icon: DeviceFloppy, keybind: "Ctrl + S" },
+	];
 
 	const onRightClick = (event: MouseEvent) => {
 		event.preventDefault();

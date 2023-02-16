@@ -19,17 +19,13 @@ export default function Home() {
 	const { updateProject } = useProject();
 
 	useEffect(() => {
-		let unlisten: (() => void) | undefined;
-
-		(async () => {
-			unlisten = await listen("update-project", (event) => {
-				console.log(event);
-				updateProject();
-			});
-		})();
+		let unlisten = listen("update-project", (event) => {
+			console.log(event);
+			updateProject();
+		});
 
 		return () => {
-			if (unlisten) unlisten();
+			unlisten.then((f: any) => f());
 		};
 	}, []);
 

@@ -4,8 +4,7 @@ import React, { useEffect, useRef, useState } from "react";
 import Line from "@/components/Line";
 import { invoke } from "@tauri-apps/api/tauri";
 import ContextMenu, { MenuElement } from "@/components/ContextMenu";
-import { createNode } from "@/handlers/createNode";
-import { DeviceFloppy, Plus, Trash } from "tabler-icons-react";
+import { Trash } from "tabler-icons-react";
 
 export default function Node({
 	data,
@@ -43,11 +42,8 @@ export default function Node({
 		if (event.button !== 0) return;
 		setPressing(false);
 		enablePanning();
-		await invoke("set_node_position", {
-			id: data.id,
-			position: [data.position[0], data.position[1]],
-		});
 	};
+
 	const handleMouseMove = async (event: any) => {
 		if (pressing) {
 			const deltaX = event.clientX - mousePosition.x;
@@ -67,6 +63,7 @@ export default function Node({
 			}));
 		}
 	};
+
 	let handleNodeMenu = (event: any) => {
 		event.stopPropagation();
 		event.preventDefault();
@@ -122,6 +119,12 @@ export default function Node({
 					<div
 						className={classes.nodeTitle}
 						onMouseDown={handleMouseDown}
+						onMouseUp={async () => {
+							await invoke("set_node_position", {
+								id: data.id,
+								position: [data.position[0], data.position[1]],
+							});
+						}}
 						style={{
 							background: `linear-gradient(to right, ${data.color}, #5f5f5f)`,
 						}}

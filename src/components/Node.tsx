@@ -31,7 +31,9 @@ export default function Node({
 	const [contextMenuPos, setContextMenuPos] = useState({ x: 0, y: 0 });
 
 	const handleMouseDown = (event: any) => {
-		if (event.button !== 0) return;
+		if (event.button !== 0) {
+			return;
+		}
 		event.stopPropagation();
 		setPressing(true);
 		setMousePosition({ x: event.clientX, y: event.clientY });
@@ -39,7 +41,9 @@ export default function Node({
 	};
 
 	const handleMouseUp = async (event: any) => {
-		if (event.button !== 0) return;
+		if (event.button !== 0) {
+			return;
+		}
 		setPressing(false);
 		enablePanning();
 	};

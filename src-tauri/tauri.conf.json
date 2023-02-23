@@ -1,10 +1,11 @@
 {
 	"$schema": "../node_modules/@tauri-apps/cli/schema.json",
 	"build": {
-		"beforeBuildCommand": "npm run build && npm run export",
-		"beforeDevCommand": "npm run dev",
-		"devPath": "http://localhost:3000",
-		"distDir": "../out"
+		"beforeDevCommand": "yarn start",
+		"beforeBuildCommand": "yarn build",
+		"devPath": "http://localhost:1420",
+		"distDir": "../dist",
+		"withGlobalTauri": false
 	},
 	"package": {
 		"productName": "ndm",
@@ -56,10 +57,10 @@
 		"windows": [
 			{
 				"fullscreen": false,
-				"height": 600,
+				"width": 1280,
+				"height": 720,
 				"resizable": true,
-				"title": "NorteX Discord Bot Creator",
-				"width": 800
+				"title": "NorteX Discord Bot Creator"
 			}
 		]
 	}

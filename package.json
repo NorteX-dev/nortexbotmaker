@@ -3,24 +3,22 @@
 	"version": "0.1.0",
 	"private": true,
 	"scripts": {
-		"dev": "next dev",
-		"build": "next build",
-		"start": "next start",
-		"lint": "next lint",
+		"dev": "tauri dev",
+		"build": "cross-env INLINE_RUNTIME_CHUNK=false yarn vite build",
+		"start": "vite",
 		"tauri": "tauri"
 	},
 	"dependencies": {
-		"@chakra-ui/react": "^2.4.9",
 		"@emotion/react": "^11.10.5",
 		"@emotion/styled": "^11.10.5",
-		"@next/font": "13.1.6",
+		"@fontsource/poppins": "^4.5.10",
+		"@mantine/core": "^5.10.4",
+		"@mantine/hooks": "^5.10.4",
 		"@tabler/icons": "^2.2.0",
 		"@tauri-apps/api": "^1.2.0",
 		"framer-motion": "^9.0.0",
-		"next": "13.1.6",
 		"react": "18.2.0",
 		"react-dom": "18.2.0",
-		"react-spring": "^9.6.1",
 		"sass": "^1.58.0",
 		"tabler-icons-react": "^1.56.0",
 		"typescript": "4.9.5"
@@ -30,7 +28,11 @@
 		"@types/node": "18.11.18",
 		"@types/react": "18.0.27",
 		"@types/react-dom": "18.0.10",
+		"@typescript-eslint/eslint-plugin": "^5.53.0",
+		"@vitejs/plugin-react": "^3.1.0",
 		"eslint": "8.33.0",
-		"eslint-config-next": "13.1.6"
+		"eslint-config-react-app": "^7.0.1",
+		"vite": "^4.1.0",
+		"vite-plugin-eslint": "^1.8.1"
 	}
 }

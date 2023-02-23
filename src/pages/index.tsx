@@ -16,12 +16,12 @@ export default function Home() {
 		{ ctrl: true }
 	);
 
-	const { updateProject } = useProject();
+	const { refreshProject } = useProject();
 
 	useEffect(() => {
 		let unlisten = listen("update-project", (event) => {
 			console.log(event);
-			updateProject();
+			refreshProject();
 		});
 
 		return () => {

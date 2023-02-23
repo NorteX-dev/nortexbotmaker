@@ -9,7 +9,7 @@ export default function RightClickContextMenuHandler() {
 	const [shown, setShown] = useState(false);
 	const [menuPos, setMenuPos] = useState({ x: 0, y: 0 });
 
-	const { updateProject } = useProject();
+	const { refreshProject } = useProject();
 
 	const RC_CONTEXT_MENU: MenuElement[] = [
 		{
@@ -22,7 +22,7 @@ export default function RightClickContextMenuHandler() {
 		{
 			name: "Refresh",
 			action: () => {
-				updateProject();
+				refreshProject();
 			},
 			icon: Refresh,
 		},

@@ -1,4 +1,4 @@
-import { createContext, ReactNode, useContext, useEffect, useState } from "react";
+import { createContext, Dispatch, ReactNode, SetStateAction, useContext, useEffect, useState } from "react";
 import { invoke } from "@tauri-apps/api/tauri";
 
 export interface BpNode {
@@ -17,22 +17,41 @@ export interface Project {
 	blueprint: Blueprint;
 }
 
+interface ProjectContext {
+	project: Project | null;
+	setProject: Dispatch<SetStateAction<Project | null>>;
+	refreshProject: () => void;
+	setBlueprint: (cb: (blueprint: Blueprint) => Blueprint) => void;
+}
+
 export const ProjectContext = createContext<any>(null);
 
 export default function ProjectProvider({ children }: { children: ReactNode }) {
 	const [project, setProject] = useState<Project | null>(null);
 
-	async function updateProject() {
-		await invoke<Project>("get_project").then((proj) => {
+	async function refreshProject() {
+		await invoke<Project>("get_project").then((proj: Project) => {
 			setProject(proj);
 		});
 	}
 
+	function setBlueprint(cb: (blueprint: Blueprint) => Blueprint) {
+		setProject((project: Project | null) => {
+			if (!project) return null;
+			return {
+				...project,
+				blueprint: cb(project.blueprint),
+			};
+		});
+	}
+
 	useEffect(() => {
-		updateProject();
+		refreshProject();
 	}, []);
 
-	return <ProjectContext.Provider value={{ project, setProject, updateProject }}>{children}</ProjectContext.Provider>;
+	const contextValue: ProjectContext = { project, setProject, refreshProject, setBlueprint };
+
+	return <ProjectContext.Provider value={contextValue}>{children}</ProjectContext.Provider>;
 }
 
 export function useProject() {

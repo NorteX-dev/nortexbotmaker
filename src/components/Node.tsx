@@ -1,10 +1,11 @@
 import classes from "../styles/Blueprint.module.scss";
-import { BpNode, Project, useProject } from "@/providers/ProjectProvider";
+import { Blueprint, BpNode, useProject } from "@/providers/ProjectProvider";
 import React, { useEffect, useRef, useState } from "react";
 import Line from "@/components/Line";
 import { invoke } from "@tauri-apps/api/tauri";
 import ContextMenu, { MenuElement } from "@/components/ContextMenu";
 import { Trash } from "tabler-icons-react";
+import { useEditor } from "@/hooks/useEditor";
 
 export default function Node({
 	data,
@@ -17,7 +18,7 @@ export default function Node({
 	enablePanning: () => void;
 	index: number;
 }) {
-	const { setProject } = useProject();
+	const { setBlueprint } = useProject();
 
 	const [pressing, setPressing] = useState<boolean>(false);
 	const [mousePosition, setMousePosition] = useState<{ x: number; y: number }>({ x: 0, y: 0 });
@@ -26,9 +27,6 @@ export default function Node({
 	const ref2 = useRef<HTMLDivElement>(null);
 	const [coords, setCoords] = useState({ x1: 0, y1: 0, x2: 0, y2: 0 });
 	const [showLine, setShowLine] = useState(false);
-
-	const [contextMenuShown, setContextMenuShown] = useState(false);
-	const [contextMenuPos, setContextMenuPos] = useState({ x: 0, y: 0 });
 
 	const handleMouseDown = (event: any) => {
 		if (event.button !== 0) {
@@ -49,21 +47,20 @@ export default function Node({
 	};
 
 	const handleMouseMove = async (event: any) => {
+		const mapNodes = (deltaX: number, deltaY: number) => (node: BpNode, idx: number) => {
+			if (idx !== index) return node;
+			return {
+				...node,
+				position: [node.position[0] + deltaX, node.position[1] + deltaY],
+			};
+		};
+
 		if (pressing) {
 			const deltaX = event.clientX - mousePosition.x;
 			const deltaY = event.clientY - mousePosition.y;
 			setMousePosition({ x: event.clientX, y: event.clientY });
-			setProject((project: Project) => ({
-				blueprint: {
-					...project.blueprint,
-					nodes: project.blueprint.nodes.map((node, idx) => {
-						if (idx !== index) return node;
-						return {
-							...node,
-							position: [node.position[0] + deltaX, node.position[1] + deltaY],
-						};
-					}),
-				},
+			setBlueprint((blueprint: Blueprint) => ({
+				nodes: blueprint.nodes.map(mapNodes(deltaX, deltaY)),
 			}));
 		}
 	};
@@ -71,9 +68,7 @@ export default function Node({
 	let handleNodeMenu = (event: any) => {
 		event.stopPropagation();
 		event.preventDefault();
-		setContextMenuShown(true);
-		if (window.innerWidth - event.clientX < 200) setContextMenuPos({ x: event.clientX - 200, y: event.clientY });
-		else setContextMenuPos({ x: event.clientX, y: event.clientY });
+		// openContextMenu(event);
 	};
 
 	useEffect(() => {
@@ -96,17 +91,6 @@ export default function Node({
 			setCoords({ x1, y1, x2, y2 });
 		}
 	}, [ref1, ref2]);
-
-	const NODE_CONTEXT_MENU: MenuElement[] = [
-		{
-			name: "Delete",
-			action: () => {
-				console.log("delete");
-			},
-			icon: Trash,
-			danger: true,
-		},
-	];
 
 	return (
 		<>
@@ -149,13 +133,39 @@ export default function Node({
 					</div>
 				</div>
 			</div>
-			{contextMenuShown && (
-				<ContextMenu
-					elements={NODE_CONTEXT_MENU}
-					position={contextMenuPos}
-					onClose={() => setContextMenuShown(false)}
-				/>
-			)}
+			<ContextMenuHandler />
 		</>
 	);
+}
+
+function ContextMenuHandler() {
+	const [contextMenuShown, setContextMenuShown] = useState(false);
+	const [contextMenuPos, setContextMenuPos] = useState({ x: 0, y: 0 });
+
+	function openContextMenu(event: any) {
+		setContextMenuShown(true);
+		if (window.innerWidth - event.clientX < 200) setContextMenuPos({ x: event.clientX - 200, y: event.clientY });
+		else setContextMenuPos({ x: event.clientX, y: event.clientY });
+	}
+
+	const NODE_CONTEXT_MENU: MenuElement[] = [
+		{
+			name: "Delete",
+			action: () => {
+				console.log("delete");
+			},
+			icon: Trash,
+			danger: true,
+		},
+	];
+	if (contextMenuShown) {
+		return (
+			<ContextMenu
+				elements={NODE_CONTEXT_MENU}
+				position={contextMenuPos}
+				onClose={() => setContextMenuShown(false)}
+			/>
+		);
+	}
+	return null;
 }
